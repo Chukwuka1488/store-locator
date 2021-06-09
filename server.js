@@ -18,6 +18,9 @@ app.use(express.json());
 // Enable cors
 app.use(cors());
 
+// Set static folder for frontend
+app.use(express.static(path.join(__dirname, "public")));
+
 // Routes
 app.use("/api/v1/amazon", require("./routes/amazon"));
 
