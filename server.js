@@ -22,7 +22,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
-app.use("/api/v1/amazon", require("./routes/amazon"));
+app.use("/api/v1/amazons", require("./routes/amazons"));
 
 const PORT = process.env.PORT || 8000;
 

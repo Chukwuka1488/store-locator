@@ -11,7 +11,7 @@ const amazonSchema = new Schema({
     required: [true, "Please add an amazon ID"],
     unique: true,
     trim: true,
-    maxlength: [100, "Amazon ID must be less than 100 characters"],
+    maxlength: [10, "Amazon ID must be less than 100 characters"],
   },
   address: {
     type: String,

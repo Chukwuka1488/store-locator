@@ -3,14 +3,14 @@ const Amazon = require("../models/Amazon");
 // @desc Get all amazon forest data
 // @route GET /api/v1/amazon
 // @access Public
-exports.getAmazon = async (req, res, next) => {
+exports.getAmazons = async (req, res, next) => {
   try {
-    const amazonData = await Amazon.find();
+    const amazons = await Amazon.find();
 
     return res.status(200).json({
       success: true,
-      count: amazonData.length,
-      data: amazonData,
+      count: amazons.length,
+      data: amazons,
     });
   } catch (error) {
     console.error(error);
@@ -23,11 +23,11 @@ exports.getAmazon = async (req, res, next) => {
 // @access Public
 exports.addAmazon = async (req, res, next) => {
   try {
-    const amazonData = await Amazon.create(req.body);
+    const amazon = await Amazon.create(req.body);
 
     return res.status(200).json({
       success: true,
-      data: amazonData,
+      data: amazon,
     });
   } catch (error) {
     console.error(error);

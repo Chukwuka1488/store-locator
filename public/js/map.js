@@ -1,5 +1,3 @@
-// const { load } = require("dotenv");  == not required 
-
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2h1a3d1a2ExNCIsImEiOiJja3BneG1wcWUwN2p3MnVwbXhnengxZDgxIn0.6ijOlwMA-gH2XceZobHt-w";
 const map = new mapboxgl.Map({
@@ -9,7 +7,33 @@ const map = new mapboxgl.Map({
   center: [3.39861, 6.55541],
 });
 
-function loadMap() {
+// to fetch locations from api
+async function getAmazons() {
+  const res = await fetch("/api/v1/amazons"); // the api route initially created
+  const data = await res.json();
+  // to convert it to a location method
+  const amazons = data.data.map((amazon) => {
+    return {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [
+          amazon.location.coordinates[0],
+          amazon.location.coordinates[1],
+        ],
+      },
+      properties: {
+        amazonId: amazon.amazonId,
+        icon: "shop",
+      },
+    };
+  });
+
+  loadMap(amazons);
+}
+
+//load map with locations
+function loadMap(amazons) {
   map.on("load", function () {
     // Load an image from an external URL.
     // map.loadImage(
@@ -25,19 +49,20 @@ function loadMap() {
       type: "geojson",
       data: {
         type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [3.39861, 6.55541],
-            },
-            properties: {
-              amazonId: "0001",
-              icon: "shop",
-            },
-          },
-        ],
+        features: amazons,
+        // features: [
+        //   {
+        //     type: "Feature",
+        //     geometry: {
+        //       type: "Point",
+        //       coordinates: [3.39861, 6.55541],
+        //     },
+        //     properties: {
+        //       amazonId: "0001",
+        //       icon: "shop",
+        //     },
+        //   },
+        // ],
       },
     });
 
@@ -58,4 +83,4 @@ function loadMap() {
   });
 }
 
-loadMap();
+getAmazons();
