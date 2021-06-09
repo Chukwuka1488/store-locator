@@ -1,5 +1,6 @@
 //Require Mongoose
 const mongoose = require("mongoose");
+const geocoder = require("../utils/geocoder");
 
 //Define a schema
 const Schema = mongoose.Schema;
@@ -14,7 +15,7 @@ const amazonSchema = new Schema({
   },
   address: {
     type: String,
-    required: [true, "Please add an address"]
+    required: [true, "Please add an address"],
   },
   location: {
     type: {
@@ -33,6 +34,21 @@ const amazonSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+// to create a piece of mongoose middleware
+// Geocode and create location
+amazonSchema.pre("save", async function (next) {
+  const loc = await geocoder.geocode(this.address);
+  this.location = {
+    type: "Point",
+    coordinates: [loc[0].longitude, loc[0].latitude],
+    formattedAddress: loc[0].formattedAddress,
+  }; // format it as a point on the map
+
+  // Do not save address
+  this.address = undefined;
+  next();
 });
 
 const Amazon = mongoose.model("Amazon", amazonSchema);
